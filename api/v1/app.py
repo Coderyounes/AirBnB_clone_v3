@@ -17,7 +17,7 @@ def handle_bad_request(e):
     """
     handle all 404 errors
     """
-    return jsonify({"error": "Not found"})
+    return jsonify({"error": "Not found"}), 404
 
 
 @app.teardown_appcontext
