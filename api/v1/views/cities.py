@@ -2,6 +2,7 @@
 """ RESTAPI Action For the State Object"""
 
 from models.city import City
+from models.state import State
 import models
 from models import storage
 from api.v1.views import app_views
@@ -45,3 +46,19 @@ def remove_city(city_id):
             abort(404)
     else:
         abort(404)
+
+
+@app_views.route('/states/<state_id>/cities', methods=['POST'],
+                 strict_slashes=False)
+def create_city(state_id):
+    if not request.json:
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    if 'name' not in request.json:
+        return make_response(jsonify({"error": "Missing name"}), 400)
+    state = storage.get(State, state_id)
+    if state is not None:
+        new_city = City(**request.get_json())
+        new_city.state_id = state_id
+        new_city.save()
+        return jsonify(new_city.to_dict()), 201
+    abort(404)
