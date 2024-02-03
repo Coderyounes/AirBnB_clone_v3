@@ -20,3 +20,13 @@ def all_cities(state_id):
         else:
             abort(404)
     return jsonify(all_cities)
+
+
+@app_views.route('/cities/<city_id>', methods=['GET'], strict_slashes=False)
+def get_citie(city_id):
+    """ Reteive a Single City"""
+    city = storage.get(City, city_id)
+    if city:
+        return jsonify(city.to_dict())
+    else:
+        abort(404)
