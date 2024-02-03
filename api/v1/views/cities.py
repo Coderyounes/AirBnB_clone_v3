@@ -16,7 +16,7 @@ def all_cities(state_id):
     db_cities = storage.all(City).values()
     all_cities = []
     for city in db_cities:
-        if city.id == state_id:
+        if city.state_id == state_id:
             all_cities.append(city.to_dict())
         else:
             abort(404)
