@@ -48,8 +48,10 @@ def create_user():
     """ Create a new User"""
     if not request.json:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
-    if 'name' not in request.json:
-        return make_response(jsonify({"error": "Missing name"}), 400)
+    if 'email' not in request.json:
+        return make_response(jsonify({"error": "Missing email"}), 400)
+    if 'password' not in request.json:
+        return make_response(jsonify({"error": "Missing password"}), 400)
     new_user = User(**request.get_json())
     new_user.save()
     return jsonify(new_user.to_dict()), 201
@@ -64,7 +66,7 @@ def update_user(user_id):
     if user is None:
         abort(404)
     data = request.get_json()
-    if 'name' in data:
-        user.name = data['name']
+    if 'password' in data:
+        user.password = data['password']
     storage.save()
     return jsonify(user.to_dict()), 200
