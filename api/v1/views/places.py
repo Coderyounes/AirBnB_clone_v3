@@ -8,13 +8,11 @@ from api.v1.views import app_views
 from flask import jsonify, abort, request, make_response
 
 
-@app_views.route('/api/v1/cities/<city_id>/places', methods=['GET'],
+@app_views.route('/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
 def all_places(city_id):
     """ Retreive All PLaces """
-    print("Start")
     allplace = storage.all("Place").values()
-    print("Places: {}".format(allplace))
     place = []
     if not allplace:
         abort(404)
