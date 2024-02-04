@@ -1,20 +1,24 @@
 #!/usr/bin/python3
 """ RESTAPI Action For the State Object"""
 
+from models.city import City
 from models.place import Place
 from models import storage
 from api.v1.views import app_views
 from flask import jsonify, abort, request, make_response
 
 
-@app_views.route('/places', methods=['GET'],
+@app_views.route('/api/v1/cities/<city_id>/places', methods=['GET'],
                  strict_slashes=False)
-def all_places():
+def all_places(city_id):
     """ Retreive All PLaces """
-    all_places = []
-    for place in storage.all(Place).values():
-        all_places.append(place.to_dict())
-    return jsonify(all_places)
+    all_cities = storage.all("City").values()
+    city_obj = [obj.to_dict() for obj in all_cities if obj.id == city_id]
+    if city_obj == []:
+        abort(404)
+    list_places = [obj.to_dict() for obj in storage.all("Place").values()
+                   if city_id == obj.city_id]
+    return jsonify(list_places)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
