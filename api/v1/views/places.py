@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ RESTAPI Action For the State Object"""
 
+from models.user import User
 from models.city import City
 from models.place import Place
 from models import storage
@@ -48,14 +49,25 @@ def remove_place(place_id):
         abort(404)
 
 
-@app_views.route('/places', methods=['POST'],
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
                  strict_slashes=False)
-def create_place():
+def create_place(city_id):
     """ Create a new Place"""
+    city = storage.get(City, city_id)
     if not request.json:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
+    if 'user_id' not in request.json:
+        return make_response(jsonify({"error": "Missing user_id"}), 400)
     if 'name' not in request.json:
         return make_response(jsonify({"error": "Missing name"}), 400)
+    if 'city_id' not in request.json:
+        return make_response(jsonify({"error": "Missing city_id"}), 400)
+    if city is None:
+        abort(404)
+    userid = request.get_json().get('user_id')
+    user = storage.get(User, userid)
+    if user is None:
+        abort(404)
     new_place = Place(**request.get_json())
     new_place.save()
     return jsonify(new_place.to_dict()), 201
