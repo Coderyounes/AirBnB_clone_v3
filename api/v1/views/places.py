@@ -20,9 +20,6 @@ def all_places(city_id):
     for obj in allplace:
         if obj.city_id == city_id:
             place.append(obj.to_dict())
-    if place == []:
-        abort(404)
-    else:
         return jsonify(place)
 
 
