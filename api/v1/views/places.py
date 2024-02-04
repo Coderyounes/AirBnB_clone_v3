@@ -18,6 +18,7 @@ def all_places(city_id):
     if not city:
         abort(404)
     for obj in city.places:
+        print(obj.name)
         place.append(obj.to_dict())
     return jsonify(place)
 
@@ -59,15 +60,15 @@ def create_place(city_id):
         return make_response(jsonify({"error": "Missing user_id"}), 400)
     if 'name' not in request.json:
         return make_response(jsonify({"error": "Missing name"}), 400)
-    if 'city_id' not in request.json:
-        return make_response(jsonify({"error": "Missing city_id"}), 400)
     if city is None:
+        print("Cause City")
         abort(404)
-    userid = request.get_json().get('user_id')
-    user = storage.get(User, userid)
-    if user is None:
+    body_json = request.get_json()
+    user = storage.get(User, body_json['user_id'])
+    if not user:
         abort(404)
-    new_place = Place(**request.get_json())
+    body_json['city_id'] = city_id
+    new_place = Place(**body_json)
     new_place.save()
     return jsonify(new_place.to_dict()), 201
 
