@@ -13,14 +13,13 @@ from flask import jsonify, abort, request, make_response
                  strict_slashes=False)
 def all_places(city_id):
     """ Retreive All PLaces """
-    allplace = storage.all("Place").values()
+    city = storage.get(City, city_id)
     place = []
-    if not allplace:
+    if not city:
         abort(404)
-    for obj in allplace:
-        if obj.city_id == city_id:
-            place.append(obj.to_dict())
-        return jsonify(place)
+    for obj in city.places:
+        place.append(obj.to_dict())
+    return jsonify(place)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
