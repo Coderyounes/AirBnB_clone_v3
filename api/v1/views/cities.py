@@ -13,13 +13,12 @@ from flask import jsonify, abort, request, make_response
                  strict_slashes=False)
 def all_cities(state_id):
     """ Retreive All States """
-    db_cities = storage.all(City).values()
     all_cities = []
-    for city in db_cities:
-        if city.state_id == state_id:
-            all_cities.append(city.to_dict())
-        else:
-            abort(404)
+    states = storage.get(State, state_id)
+    if not states:
+        abort(404)
+    for city in states.cities:
+        all_cities.append(city.to_dict())
     return jsonify(all_cities)
 
 
