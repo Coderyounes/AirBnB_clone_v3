@@ -17,7 +17,7 @@ def all_amenities():
     return jsonify(all_amenities)
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['POST'],
+@app_views.route('/amenities/<amenity_id>', methods=['GET'],
                  strict_slashes=False)
 def get_amenity(amenity_id):
     """ Reteive a Single Amenity"""
@@ -28,7 +28,7 @@ def get_amenity(amenity_id):
         abort(404)
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['POST'],
+@app_views.route('/amenities/<amenity_id>', methods=['DELETE'],
                  strict_slashes=False)
 def remove_amenity(amenity_id):
     """ Remove a Amenity via their ID"""
@@ -57,7 +57,7 @@ def create_amenity():
     return jsonify(new_amenity.to_dict()), 201
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['POST'],
+@app_views.route('/amenities/<amenity_id>', methods=['PUT'],
                  strict_slashes=False)
 def update_amenity(amenity_id):
     """ Update an Existing Amenity"""
