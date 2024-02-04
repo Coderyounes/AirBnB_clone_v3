@@ -68,5 +68,9 @@ def update_user(user_id):
     data = request.get_json()
     if 'password' in data:
         user.password = data['password']
+    if 'first_name' in data:
+        user.first_name = data['first_name']
+    if 'last_name' in data:
+        user.last_name = data['last_name']
     storage.save()
     return jsonify(user.to_dict()), 200
