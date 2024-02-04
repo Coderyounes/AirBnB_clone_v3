@@ -12,13 +12,16 @@ from flask import jsonify, abort, request, make_response
                  strict_slashes=False)
 def all_places(city_id):
     """ Retreive All PLaces """
-    all_cities = storage.all("City").values()
-    city_obj = [obj.to_dict() for obj in all_cities if obj.id == city_id]
-    if city_obj == []:
+    print("Start")
+    allplace = storage.all("Place").values()
+    print("Places: {}".format(allplace))
+    place = []
+    if not allplace:
         abort(404)
-    list_places = [obj.to_dict() for obj in storage.all("Place").values()
-                   if city_id == obj.city_id]
-    return jsonify(list_places)
+    for obj in allplace:
+        if obj.city_id == city_id:
+            place.append(obj.to_dict())
+    return jsonify(place)
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
