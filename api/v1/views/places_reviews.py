@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """ RESTFUL API Action for review"""
 
+from models.user import User
 from models.review import Review
 from models.place import Place
 from models import storage
@@ -31,4 +32,32 @@ def single_review(review_id):
 @app_views.route('/reviews/<review_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_review(review_id):
-    pass
+    review = storage.get(Review, review_id)
+    if not review:
+        abort(404)
+    if review.id == review_id:
+        storage.delete(review)
+        storage.save()
+    return jsonify({}), 200
+
+
+@app_views.route('/places/<place_id>/reviews', methods=['POST'],
+                 strict_slashes=False)
+def create_review(place_id):
+    place = storage.get(Place, place_id)
+    if not place:
+        abort(404)
+    data = request.get_json()
+    if not data:
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    if 'user_id' not in data:
+        return make_response(jsonify({"error": "Missing user_id"}), 400)
+    if 'text' not in data:
+        return make_response(jsonify({"error": "Missing text"}), 400)
+    user = storage.get(User, data['user_id'])
+    if not user:
+        abort(404)
+    data['place_id'] = place_id
+    new_review = Review(**data)
+    new_review.save()
+    return jsonify(new_review.to_dict()), 201
