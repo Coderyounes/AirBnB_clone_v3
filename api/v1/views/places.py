@@ -76,13 +76,16 @@ def create_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
 def update_place(place_id):
     """ Update an Existing Place"""
-    if not request.json:
+    jump = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
+    data = request.get_json()
+    if not data:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
     place = storage.get(Place, place_id)
+    print(place)
     if place is None:
         abort(404)
-    data = request.get_json()
-    if 'name' in data:
-        place.name = data['name']
+    for key, value in data.items():
+        if key not in jump and hasattr(Place, key):
+            setattr(place, key, value)
     storage.save()
     return jsonify(place.to_dict()), 200
