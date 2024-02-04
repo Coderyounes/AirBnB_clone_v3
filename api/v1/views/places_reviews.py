@@ -61,3 +61,19 @@ def create_review(place_id):
     new_review = Review(**data)
     new_review.save()
     return jsonify(new_review.to_dict()), 201
+
+
+@app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
+def update_review(review_id):
+    jump = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
+    data = request.get_json()
+    if not data:
+        return make_response(jsonify({"error": "Not a JSON"}), 400)
+    review = storage.get(Review, review_id)
+    if review is None:
+        abort(404)
+    for key, value in data.items():
+        if key not in jump and hasattr(Review, key):
+            setattr(review, key, value)
+    storage.save()
+    return jsonify(review.to_dict()), 200

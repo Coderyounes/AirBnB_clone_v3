@@ -81,7 +81,6 @@ def update_place(place_id):
     if not data:
         return make_response(jsonify({"error": "Not a JSON"}), 400)
     place = storage.get(Place, place_id)
-    print(place)
     if place is None:
         abort(404)
     for key, value in data.items():
